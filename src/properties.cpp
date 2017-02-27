@@ -1,11 +1,12 @@
-#include "PD.hpp"
+#include <cstring>
+#include "cansend.h"
 
-Property::Property(float val, float Kp, float Kd, char* can_device_id) 
+Property::Property(float val, float Kp, float Kd, char* can_dev_id) 
 {
 	_val = val;
 	_Kp = Kp;
 	_Kd = Kd;
-	_can_device_id = can_device_id
+	_can_dev_id = can_dev_id;
 }
 
 void Property::change_err(int new_err)
@@ -16,13 +17,21 @@ void Property::change_err(int new_err)
 void Property::calc_reg()
 {
 	_err = center - pos;
-	_reg = PD(_err,_Kp,_Kd);
+  float d = (_err - _prev_err) * _Kd;
+	float p = _Kp * _err;
+	float reg = d + p;
+	_reg = (int)reg;
 	_last_err = _err;
 }
 
-void can_send(int reg)
+int can_send()
 {
-	char* reg_c = (char*)
-	char* msg = _can_device_id + '#' + (char*)reg;
-	cansend(msg);
+	char msg[50], reg_c[20];
+	
+	sprintf(reg_c,"%d",_reg);
+	strcpy(msg,_can_dev_id);
+	strcat(msg,"#");
+	strcat(msg,reg_c);
+	
+	return cansend(msg);
 }

@@ -12,5 +12,5 @@ class Property
 	float get_val() const {return _val;}
 	float get_val() {return _val;}
 	int get_reg() const {return _reg;}
-	void parse_msg(int reg);
+	void can_send(int _reg);
 };
