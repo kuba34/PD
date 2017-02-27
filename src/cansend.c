@@ -61,7 +61,7 @@ extern "C" {
 
 #include "lib.h"
 
-int can_send(char* msg)
+int cansend(char* msg)
 {
 	int s; /* can raw socket */ 
 	int nbytes;
