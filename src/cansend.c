@@ -44,6 +44,9 @@
  * Send feedback to <linux-can@vger.kernel.org>
  *
  */
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -58,18 +61,18 @@
 
 #include "lib.h"
 
-int can_send(int reg)
+int can_send(char* msg)
 {
 	int s; /* can raw socket */ 
 	int nbytes;
 	struct sockaddr_can addr;
 	struct can_frame frame;
 	struct ifreq ifr;
+	char reg_c[50], msg[100];
+	char* can_dev = "can0"
 	
-	msg = can_device_id + '#' + reg_c;
-
 	/* parse CAN frame */
-	if (parse_canframe(argv[2], &frame)){
+	if (parse_canframe(msg, &frame)){
 		fprintf(stderr, "\nWrong CAN-frame format!\n\n");
 		fprintf(stderr, "Try: <can_id>#{R|data}\n");
 		fprintf(stderr, "can_id can have 3 (SFF) or 8 (EFF) hex chars\n");
@@ -89,7 +92,7 @@ int can_send(int reg)
 
 	addr.can_family = AF_CAN;
 
-	strcpy(ifr.ifr_name, argv[1]);
+	strcpy(ifr.ifr_name, can_dev);
 	if (ioctl(s, SIOCGIFINDEX, &ifr) < 0) {
 		perror("SIOCGIFINDEX");
 		return 1;
@@ -117,3 +120,6 @@ int can_send(int reg)
 
 	close(s);
 }
+#ifdef __cplusplus
+}
+#endif
