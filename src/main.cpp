@@ -4,17 +4,16 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/opencv.hpp>
 #include <iostream>
-#include "cansend.h"
 
 using namespace cv;
-using namespace std::cout;
-using namespace std::cerr;
-using namespace std::endl;
+//using namespace std::cout;
+//using namespace std::cerr;
+using namespace std;
 
 VideoCapture camera_start();
 float calc_speed_reg(float dist);
-float calc_direction_reg(float val);
-int can_send(float, const char*)
+float calc_direction_reg(float width,float val);
+char* can_msg(float reg, const char* can_device_id);
 
 int main() {
   VideoCapture capture=camera_start();
@@ -26,6 +25,8 @@ int main() {
 	float cap_width, speed_reg, dir_reg;
 	const char* speed_addr = "A45";
 	const char* dir_addr = "B45";
+	char msg[50];
+	char can_s[100] = "cansend can0 ";
 
   std::vector<vector<Point> > contours;
   std::vector<Point> contours_poly;
@@ -97,6 +98,7 @@ int main() {
           circles.erase (circles.begin());
           continue;
         }
+				float c = (float)center.x;
       }
       if(flag==1) {
         flag=0;
@@ -108,9 +110,8 @@ int main() {
     cout<<"Nie znalazłem ani jednego wzroca!"<<endl;
     }
 		speed_reg = calc_speed_reg(dist);
-		dir_reg = calc_direction_reg(center.x, cap_width);
-		can_send(speed_reg, speed_addr);
-		can_send(dir_reg, dir_addr);
+		dir_reg = calc_direction_reg(c, cap_width);
+		can_msg(speed_reg, speed_addr);
   }
   capture.release();
   contours.clear();
@@ -138,12 +139,12 @@ float calc_speed_reg(float dist)
 	static const float dist_point = 100;
 	
 	// PD controller
-	float error = dits_point - dist;
-  float d = (error - prev_err) * Kd;
+	float error = dist_point - dist;
+  float d = (error - prev_error) * Kd;
 	float p = Kp * error;
 
 	prev_error = error;
-	return reg = d + p;
+	return d + p;
 }
 
 float calc_direction_reg(float val, float width)
@@ -162,14 +163,15 @@ float calc_direction_reg(float val, float width)
 	return d + p;
 }
 
-int can_send(float reg, const char* can_device_id)
+char* can_msg(float reg, const char* can_device_id)
 {
 	char msg[50], reg_c[20];
-	
+	char s[100] = "cansend can0 ";
 	sprintf(reg_c,"%d",reg);
 	strcpy(msg,can_device_id);
 	strcat(msg,"#");
 	strcat(msg,reg_c);
+	strcat(s,msg);
 	
-	return cansend(msg);
+	system(s);
 }

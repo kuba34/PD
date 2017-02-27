@@ -59,7 +59,8 @@ extern "C" {
 #include <linux/can.h>
 #include <linux/can/raw.h>
 
-#include "lib.h"
+#include "../inc/lib.h"
+#include "../inc/cansend.h"
 
 int cansend(char* msg)
 {
@@ -68,8 +69,6 @@ int cansend(char* msg)
 	struct sockaddr_can addr;
 	struct can_frame frame;
 	struct ifreq ifr;
-	char reg_c[50], msg[100];
-	char* can_dev = "can0"
 	
 	/* parse CAN frame */
 	if (parse_canframe(msg, &frame)){
@@ -92,7 +91,7 @@ int cansend(char* msg)
 
 	addr.can_family = AF_CAN;
 
-	strcpy(ifr.ifr_name, can_dev);
+	strcpy(ifr.ifr_name, "can0");
 	if (ioctl(s, SIOCGIFINDEX, &ifr) < 0) {
 		perror("SIOCGIFINDEX");
 		return 1;

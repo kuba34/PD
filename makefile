@@ -6,13 +6,10 @@ LDFLAGS=`pkg-config opencv --libs` -std=c++11 -Wall -O2
 
 all: Recon
 
-Recon: obj/main.o obj/cansend.o
+Recon: obj/main.o
 	$(CC) $^ -o $@ $(LDFLAGS)
 
-obj/main.o: src/main.cpp 
-	$(CC) -c $< -o $@ $(CXXFLAGS)
-
-obj/cansend.o: src/cansend.c inc/lib.h inc/cansend.h
+obj/main.o: src/main.cpp
 	$(CC) -c $< -o $@ $(CXXFLAGS)
 
 .PHONY: clean
