@@ -9,11 +9,6 @@ Property::Property(float val, float Kp, float Kd, char* can_dev_id)
 	_can_dev_id = can_dev_id;
 }
 
-void Property::change_err(int new_err)
-{
-	_err = new_err;
-}
-
 void Property::calc_reg()
 {
 	_err = center - pos;
@@ -21,7 +16,7 @@ void Property::calc_reg()
 	float p = _Kp * _err;
 	float reg = d + p;
 	_reg = (int)reg;
-	_last_err = _err;
+	_prev_err = _err;
 }
 
 int can_send()
