@@ -24,22 +24,7 @@ dtoverlay=spi-bcm2835-overlay
 ```
 Reboot.
 
-## Compiling Can-utils
 
-You may need to install some prerequisites:
-```shell
-sudo apt-get install git autoconf libtool
-```
-
-Run the following commands to compile can-utils:
-```shell
-git clone https://github.com/linux-can/can-utils.git
-cd can-utils
-./autogen.sh
-./configure
-make
-sudo make install
-```
 ## Bring Up the Interface
 
 You can bring up the interface with:

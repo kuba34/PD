@@ -44,9 +44,6 @@
  * Send feedback to <linux-can@vger.kernel.org>
  *
  */
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -60,16 +57,21 @@ extern "C" {
 #include <linux/can/raw.h>
 
 #include "lib.h"
+#include "cansend.h"
 
-int can_send(char* msg)
+int cansend(int val, const char* dev_addr)
 {
 	int s; /* can raw socket */ 
 	int nbytes;
 	struct sockaddr_can addr;
 	struct can_frame frame;
 	struct ifreq ifr;
-	char reg_c[50], msg[100];
-	char* can_dev = "can0"
+	char reg_c[10], msg[20];
+
+	sprintf(reg_c,"%d",val);
+	strcpy(msg,dev_addr);
+	strcat(msg,"#");
+	strcat(msg,reg_c);
 	
 	/* parse CAN frame */
 	if (parse_canframe(msg, &frame)){
@@ -92,7 +94,7 @@ int can_send(char* msg)
 
 	addr.can_family = AF_CAN;
 
-	strcpy(ifr.ifr_name, can_dev);
+	strcpy(ifr.ifr_name, "can0");
 	if (ioctl(s, SIOCGIFINDEX, &ifr) < 0) {
 		perror("SIOCGIFINDEX");
 		return 1;
@@ -117,9 +119,7 @@ int can_send(char* msg)
 	}
 
 	//fprint_long_canframe(stdout, &frame, "\n", 0);
-
+	
 	close(s);
+	return 0;
 }
-#ifdef __cplusplus
-}
-#endif
