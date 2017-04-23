@@ -68,7 +68,7 @@ int cansend(int val, const char* dev_addr)
 	struct ifreq ifr;
 	char reg_c[10], msg[20];
 
-	sprintf(reg_c,"%d",val);
+	sprintf(reg_c,"%x",val);
 	strcpy(msg,dev_addr);
 	strcat(msg,"#");
 	strcat(msg,reg_c);

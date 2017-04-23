@@ -10,10 +10,10 @@ using namespace cv;
 using namespace std;
 
 VideoCapture camera_start();
+
 int main() {
   VideoCapture capture=camera_start();
   u_int dist=0, flag=0;
-  char key='1';
   int treshl=20, treshh=60;
   int i_cont;
   double a, b, c;
@@ -28,8 +28,8 @@ int main() {
   Mat frame, binary, cont, hough, frame_c, detectable, frame_a, tmp;
   Rect boundRect;
   cv::Ptr<cv::SimpleBlobDetector> detector = cv::SimpleBlobDetector::create();
-  while ( key!='q' ) {
-    key=waitKey(30);
+  
+	while ( true ) {
     contours.clear();
     contours_poly.clear();
     circles.clear();
@@ -70,10 +70,10 @@ int main() {
         detectable.copyTo(tmp);
         detector->detect( tmp, keypoints );
         if(keypoints.size()==3){
-          a = sqrt(pow((keypoints[0].pt.x-keypoints[1].pt.x), 2)+ pow((keypoints[0].pt.y-keypoints[1].pt.y), 2));
-          b = sqrt(pow((keypoints[1].pt.x-keypoints[2].pt.x), 2)+ pow((keypoints[1].pt.y-keypoints[2].pt.y), 2));
-          c = sqrt(pow((keypoints[2].pt.x-keypoints[0].pt.x), 2)+ pow((keypoints[2].pt.y-keypoints[0].pt.y), 2));
-          if(abs(a-b)<5&&abs(a-c)<5&&abs(b-c)<5&&abs(b-a)<5&&abs(c-a)<5&&abs(c-b)<5) {
+          a = pow((keypoints[0].pt.x-keypoints[1].pt.x), 2)+ pow((keypoints[0].pt.y-keypoints[1].pt.y), 2);
+          b = pow((keypoints[1].pt.x-keypoints[2].pt.x), 2)+ pow((keypoints[1].pt.y-keypoints[2].pt.y), 2);
+          c = pow((keypoints[2].pt.x-keypoints[0].pt.x), 2)+ pow((keypoints[2].pt.y-keypoints[0].pt.y), 2);
+          if(abs(a-b)<25&&abs(a-c)<25&&abs(b-c)<25&&abs(b-a)<25&&abs(c-a)<25&&abs(c-b)<25) {
             cout<<endl<<"Found!!!: ";
             cout<<center<<endl;
             double mean= (a+b+c)/3;
@@ -112,12 +112,12 @@ int main() {
   return 0;
 }
 
-VideoCapture camera_start(){
+VideoCapture camera_start()
+{
   VideoCapture capture = VideoCapture(0);
   if(!capture.isOpened()) {
-    cout<<"Kamera umarla"<<endl;
-    exit(-1);
-  	return -1;
+    cerr<<"Kamera umarla"<<endl;
+    abort();
   }
   else{
     return capture;

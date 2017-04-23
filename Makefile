@@ -1,7 +1,7 @@
 CC=gcc
 CXX=g++
-CXXFLAGS=`pkg-config opencv --cflags` -Iinc -Wall
-LDFLAGS=`pkg-config opencv --libs` -std=c++11 -Wall
+CXXFLAGS=`pkg-config opencv --cflags` -Iinc -Wall -O2
+LDFLAGS=`pkg-config opencv --libs` -std=c++11 -Wall -O2
 
 .PHONY: all
 
